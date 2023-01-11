@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getSucursales } from "../controllers/sucursales.controller";
+import { getSucursales, createSucursal } from "../controllers/sucursales.controller";
 
 const router = Router();
 
-router.route("/").get(getSucursales);
+router.route("/").get(getSucursales).post(createSucursal);
 
 export default router;
