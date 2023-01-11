@@ -1,5 +1,7 @@
 import express, { Application } from "express";
 import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
 
 //Routes
 import IndexRoutes from "./routes/index.routes";
@@ -31,7 +33,7 @@ class App {
 
   routes() {
     this.app.use(IndexRoutes);
-    this.app.use("/sucursales", SucursalesRoutes);
+    this.app.use("/api/v1/sucursales", SucursalesRoutes);
   }
 }
 
