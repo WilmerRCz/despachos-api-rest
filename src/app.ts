@@ -34,6 +34,12 @@ class App {
   routes() {
     this.app.use(IndexRoutes);
     this.app.use("/api/v1/sucursales", SucursalesRoutes);
+
+    this.app.use((req, res) => {
+      res.status(404).json({
+        message: "No se encontró la ruta"
+      })
+    })
   }
 }
 

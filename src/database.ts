@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export async function connect() {
+
   const connection = await createPool({
     host: process.env.HOST,
     user: process.env.USER,
@@ -10,5 +11,6 @@ export async function connect() {
     database: process.env.DATABASE,
     connectionLimit: 10,
   });
+  
   return connection;
 }
