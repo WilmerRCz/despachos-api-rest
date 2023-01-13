@@ -1,5 +1,5 @@
 export interface Usuarios {
-  id_usuario: String;
+  id_usuario?: String;
   nombre_usuario: String;
   apellido_usuario: String;
   correo: String;

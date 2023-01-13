@@ -62,7 +62,7 @@ export async function updateVehiculo(req: Request, res: Response) {
     ]);
     //VALIDAR SI RUTA ES DIFERENTE Y SI SE ENVIA UN DATO INEXISTENTE
     return res.json({
-      message: "Vehiculo editado",
+      message: "Vehiculo actualizado",
     });
   } catch (error) {
     return res.status(500).json({
