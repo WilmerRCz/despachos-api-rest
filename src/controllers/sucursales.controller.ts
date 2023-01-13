@@ -23,6 +23,7 @@ export async function createSucursal(req: Request, res: Response) {
   try {
     const conn = await connect();
     await conn.query("INSERT INTO sucursales SET ?", [newSucursal]);
+    //VALIDAR SI SE ENVIAN DATOS INCORRECTOS A DB
     return res.json({
       message: "Sucursal Creada",
     });
@@ -41,15 +42,7 @@ export async function getSucursal(req: Request, res: Response) {
       "SELECT * FROM sucursales WHERE id_sucursal = ?",
       [id]
     );
-    console.log(sucursal)
-    if(sucursal[0] = []) {
-      res.json({
-        message: "La sucursal no existe"
-      })
-    }else{
-      return res.json(sucursal[0]);
-    }
-    
+    return res.json(sucursal[0]);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al obtener la sucursal",
@@ -62,10 +55,11 @@ export async function updateSucursal(req: Request, res: Response) {
   const updateSucursal: Sucursales = req.body;
   try {
     const conn = await connect();
-    conn.query("UPDATE sucursales SET ? WHERE id_sucursal = ?", [
+    await conn.query("UPDATE sucursales SET ? WHERE id_sucursal = ?", [
       updateSucursal,
       id,
     ]);
+    //VALIDAR SI RUTA ES DIFERENTE Y SI SE ENVIA UN DATO INEXISTENTE
     return res.json({
       message: "Sucursal editada",
     });
