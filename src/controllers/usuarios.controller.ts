@@ -94,3 +94,18 @@ export async function getUsuariosActivos(req: Request, res: Response) {
     });
   }
 }
+
+export async function getDespachadoresActivos(req: Request, res: Response) {
+  try {
+    const conn = await connect();
+    const usuariosDespachadoresActivos = await conn.query(
+      "SELECT * FROM usuarios WHERE privilegio = ? AND estado_usuario = ?",
+      [3, 1]
+    );
+    return res.json(usuariosDespachadoresActivos[0]);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Ocurrio un error al consultar por los despachadores activos",
+    });
+  }
+}

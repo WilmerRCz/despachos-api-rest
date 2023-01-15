@@ -7,7 +7,8 @@ dotenv.config();
 import IndexRoutes from "./routes/index.routes";
 import SucursalesRoutes from "./routes/sucursales.routes";
 import VehiculosRoutes from "./routes/vehiculos.routes";
-import UsuariosRoutes from "./routes/usuarios.routes"
+import UsuariosRoutes from "./routes/usuarios.routes";
+import DespachosRoutes from "./routes/despachos.routes";
 
 class App {
   private app: Application;
@@ -38,6 +39,7 @@ class App {
     this.app.use("/api/v1/sucursales", SucursalesRoutes);
     this.app.use("/api/v1/vehiculos", VehiculosRoutes);
     this.app.use("/api/v1/usuarios", UsuariosRoutes);
+    this.app.use("/api/v1/despachos", DespachosRoutes);
 
     this.app.use((req, res) => {
       res.status(404).json({
