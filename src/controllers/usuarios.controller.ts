@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { connect } from "../database";
 import { Usuarios } from "../interface/Usuarios";
 
@@ -80,14 +80,14 @@ export async function deleteUsuario(req: Request, res: Response) {
   }
 }
 
-//Revisar codigo
 export async function getUsuariosActivos(req: Request, res: Response) {
   try {
     const conn = await connect();
     const usuariosActivos = await conn.query(
-      "SELECT * FROM usuarios WHERE estado_usuario = ?");
-    console.log(usuariosActivos);
-    return res.json(usuariosActivos);
+      "SELECT * FROM usuarios WHERE estado_usuario = ?",
+      [1]
+    );
+    return res.json(usuariosActivos[0]);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los usuarios activos",
