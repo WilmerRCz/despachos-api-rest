@@ -34,7 +34,7 @@ export async function createDespacho(req: Request, res: Response) {
   const newDespacho: Despachos = req.body;
   try {
     const conn = await connect();
-    conn.query("INSERT INTO despachos SET ?", [newDespacho])
+    conn.query("INSERT INTO despachos SET ?", [newDespacho]);
     return res.status(201).json({
       message: "Despacho creado",
     });
@@ -45,15 +45,15 @@ export async function createDespacho(req: Request, res: Response) {
   }
 }
 
-export async function updateDespacho(req:Request, res: Response) {
+export async function updateDespacho(req: Request, res: Response) {
   const id = req.params.id;
   const updateDespacho = req.body;
   try {
-    const conn = await connect()
+    const conn = await connect();
     await conn.query("UPDATE despachos SET ? WHERE id_despacho = ?", [
       updateDespacho,
       id,
-    ])
+    ]);
     return res.json({
       message: "Despacho actualizado",
     });

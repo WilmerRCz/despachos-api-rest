@@ -43,12 +43,12 @@ export async function getSucursal(req: Request, res: Response) {
       [id]
     );
     //COMPARAR VALIDACION CON ZOD Y ARRAYS VACIO
-    const result = JSON.parse(JSON.stringify(sucursal))
-    if(result <= 0){
+    const result = JSON.parse(JSON.stringify(sucursal));
+    if (result <= 0) {
       res.status(404).json({
-        message: "Sucursal no encontrada"
-      })
-    }else {
+        message: "Sucursal no encontrada",
+      });
+    } else {
       return res.json(result);
     }
   } catch (error) {

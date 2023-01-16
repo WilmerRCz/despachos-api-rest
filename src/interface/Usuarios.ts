@@ -10,4 +10,3 @@ export interface Usuarios {
   fecha_creacion_usuario?: Date;
   fecha_modificacion_usuario?: Date;
 }
-

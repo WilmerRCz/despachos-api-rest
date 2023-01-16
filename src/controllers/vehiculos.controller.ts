@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { connect } from "../database";
 import { Vehiculos } from "../interface/Vehiculos";
 
-
 export async function getVehiculos(
   req: Request,
   res: Response
@@ -86,12 +85,14 @@ export async function deleteVehiculo(req: Request, res: Response) {
   }
 }
 
-export async function getVehiculosActivos(req: Request, res: Response){
-
+export async function getVehiculosActivos(req: Request, res: Response) {
   try {
-    const conn = await connect()
-    const vehiculosActivos = await conn.query("SELECT * FROM vehiculo WHERE estado_vehiculo = ?", [1])
-    return res.json(vehiculosActivos[0])
+    const conn = await connect();
+    const vehiculosActivos = await conn.query(
+      "SELECT * FROM vehiculo WHERE estado_vehiculo = ?",
+      [1]
+    );
+    return res.json(vehiculosActivos[0]);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al conseguir los vehiculos activos",
