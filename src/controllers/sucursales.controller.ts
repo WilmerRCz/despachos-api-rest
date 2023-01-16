@@ -38,11 +38,19 @@ export async function getSucursal(req: Request, res: Response) {
   const id = req.params.id;
   try {
     const conn = await connect();
-    const sucursal = await conn.query(
+    const [sucursal] = await conn.query(
       "SELECT * FROM sucursales WHERE id_sucursal = ?",
       [id]
     );
-    return res.json(sucursal[0]);
+    //COMPARAR VALIDACION CON ZOD Y ARRAYS VACIO
+    const result = JSON.parse(JSON.stringify(sucursal))
+    if(result <= 0){
+      res.status(404).json({
+        message: "Sucursal no encontrada"
+      })
+    }else {
+      return res.json(result);
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al obtener la sucursal",
@@ -81,6 +89,21 @@ export async function deleteSucursal(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al eliminar la sucursal",
+    });
+  }
+}
+
+export async function getSucursalesActivas(req: Request, res: Response) {
+  try {
+    const conn = await connect();
+    const sucursalesActivas = await conn.query(
+      "SELECT * FROM sucursales WHERE estado_sucursal = ?",
+      [1]
+    );
+    return res.json(sucursalesActivas[0]);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Ocurrio un error al encontrar sucursales activas",
     });
   }
 }

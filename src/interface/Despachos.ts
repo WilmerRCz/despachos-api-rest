@@ -19,4 +19,6 @@ export interface Despachos {
   estado_despacho: number;
   fecha_creacion_despacho?: Date;
   fecha_modificacion_despacho?: Date;
+  fechayhora_comienzo_despacho?: Date;
+  fechayhora_termino_despacho?: Date;
 }
