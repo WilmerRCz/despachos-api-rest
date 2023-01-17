@@ -9,6 +9,7 @@ import SucursalesRoutes from "./routes/sucursales.routes";
 import VehiculosRoutes from "./routes/vehiculos.routes";
 import UsuariosRoutes from "./routes/usuarios.routes";
 import DespachosRoutes from "./routes/despachos.routes";
+//import LoginRoutes from "./routes/login.routes";
 
 class App {
   private app: Application;
@@ -40,6 +41,7 @@ class App {
     this.app.use("/api/v1/vehiculos", VehiculosRoutes);
     this.app.use("/api/v1/usuarios", UsuariosRoutes);
     this.app.use("/api/v1/despachos", DespachosRoutes);
+    //this.app.use("/api/v1/login", LoginRoutes);
 
     this.app.use((req, res) => {
       res.status(404).json({

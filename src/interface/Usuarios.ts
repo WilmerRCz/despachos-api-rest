@@ -3,7 +3,7 @@ export interface Usuarios {
   nombre_usuario: String;
   apellido_usuario: String;
   correo: String;
-  contrasena: String;
+  contrasena: string;
   privilegio: number;
   sucursal: number;
   estado_usuario?: number;

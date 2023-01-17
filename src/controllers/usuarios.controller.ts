@@ -1,5 +1,6 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { connect } from "../database";
+import bcrypt from "bcrypt"
 import { Usuarios } from "../interface/Usuarios";
 
 export async function getUsuarios(req: Request, res: Response) {
@@ -16,8 +17,14 @@ export async function getUsuarios(req: Request, res: Response) {
 
 export async function createUsuario(req: Request, res: Response) {
   const newUsuario: Usuarios = req.body;
+  const { contrasena } = newUsuario;
+
   try {
     const conn = await connect();
+    //REVISAR
+    const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
+    console.log(contrasena)
+    console.log(hashcontrasena)
     await conn.query("INSERT INTO usuarios SET ?", [newUsuario]);
     return res.status(201).json({
       message: "Usuario creado",
