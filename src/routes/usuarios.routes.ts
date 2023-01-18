@@ -8,12 +8,28 @@ import {
   getUsuariosActivos,
   updateUsuario,
 } from "../controllers/usuarios.controller";
+import {
+  isAdmin,
+  isAdminOCoordinador,
+  validateToken,
+} from "../middlewares/verifytoken";
 
 const router = Router();
 
-router.route("/activos").get(getUsuariosActivos);
-router.route("/activos/despachadores").get(getDespachadoresActivos);
-router.route("/").get(getUsuarios).post(createUsuario);
-router.route("/:id").get(getUsuario).put(updateUsuario).delete(deleteUsuario);
+router
+  .route("/activos")
+  .get([validateToken, isAdminOCoordinador], getUsuariosActivos);
+router
+  .route("/activos/despachadores")
+  .get([validateToken, isAdminOCoordinador], getDespachadoresActivos);
+router
+  .route("/")
+  .get([validateToken, isAdminOCoordinador], getUsuarios)
+  .post([validateToken, isAdminOCoordinador], createUsuario);
+router
+  .route("/:id")
+  .get([validateToken, isAdminOCoordinador], getUsuario)
+  .put([validateToken, isAdminOCoordinador], updateUsuario)
+  .delete([validateToken, isAdmin], deleteUsuario);
 
 export default router;

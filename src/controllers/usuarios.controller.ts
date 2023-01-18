@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { connect } from "../database";
 import bcrypt from "bcrypt";
 import { Usuarios } from "../interface/Usuarios";
+import { createUsuarioSchema, updateUsuarioSchema } from "../schemas/usuarioSchema";
+import { ZodError } from 'zod';
 
 export async function getUsuarios(req: Request, res: Response) {
   try {
@@ -21,7 +23,7 @@ export async function createUsuario(req: Request, res: Response) {
 
   try {
     const conn = await connect();
-
+    createUsuarioSchema.parse(newUsuario)
     const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
     newUsuario.contrasena = hashcontrasena;
 
@@ -30,6 +32,11 @@ export async function createUsuario(req: Request, res: Response) {
       message: "Usuario creado",
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al crear un usuario",
     });
@@ -55,9 +62,13 @@ export async function getUsuario(req: Request, res: Response) {
 export async function updateUsuario(req: Request, res: Response) {
   const id = req.params.id;
   const updateUsuario = req.body;
-
+  const { contrasena } = updateUsuario
   try {
     const conn = await connect();
+    updateUsuarioSchema.parse(updateUsuario)
+    const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
+    updateUsuario.contrasena = hashcontrasena;
+
     await conn.query("UPDATE usuarios SET ? WHERE id_usuario = ?", [
       updateUsuario,
       id,
@@ -66,6 +77,11 @@ export async function updateUsuario(req: Request, res: Response) {
       message: "Usuario actualizado",
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al actualizar el usuario",
     });

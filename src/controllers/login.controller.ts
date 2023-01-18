@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
+import { loginSchema } from "../schemas/loginSchema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ZodError } from "zod";
 
 export async function loginUser(req: Request, res: Response) {
   const { correo, contrasena } = req.body;
   try {
+    loginSchema.parse({ correo, contrasena });
     const conn = await connect();
     const [usuario] = await conn.query(
       "SELECT * FROM usuarios WHERE correo = ? AND estado_usuario = ?",
@@ -43,8 +46,14 @@ export async function loginUser(req: Request, res: Response) {
       });
     });
   } catch (error) {
-    res.status(500).json({
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
+    return res.status(500).json({
       message: "Se ha producido un error al intentar iniciar sesion",
+      error: error,
     });
   }
 }

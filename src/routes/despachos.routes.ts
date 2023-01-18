@@ -5,12 +5,22 @@ import {
   getDespachos,
   updateDespacho,
 } from "../controllers/despachos.controller";
-import { validateToken, isAdmin } from "../middlewares/verifytoken"
-
+import {
+  validateToken,
+  isAdmin,
+  isAdminOCoordinador,
+  isAdminOCoordinadorODespachador,
+} from "../middlewares/verifytoken";
 
 const router = Router();
 
-router.route("/").get([validateToken, isAdmin], getDespachos).post(createDespacho);
-router.route("/:id").get(getDespacho).put(updateDespacho);
+router
+  .route("/")
+  .get([validateToken, isAdmin], getDespachos)
+  .post([validateToken, isAdminOCoordinador], createDespacho);
+router
+  .route("/:id")
+  .get([validateToken, isAdminOCoordinador], getDespacho)
+  .put([validateToken, isAdminOCoordinadorODespachador], updateDespacho);
 
 export default router;

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
 import { Sucursales } from "../interface/Sucursales";
+import { createSucursalSchema, updateSucursalSchema } from "../schemas/sucursalSchema";
+import { ZodError } from 'zod';
 
 export async function getSucursales(
   req: Request,
@@ -21,13 +23,18 @@ export async function getSucursales(
 export async function createSucursal(req: Request, res: Response) {
   const newSucursal: Sucursales = req.body;
   try {
+    createSucursalSchema.parse(newSucursal)
     const conn = await connect();
     await conn.query("INSERT INTO sucursales SET ?", [newSucursal]);
-    //VALIDAR SI SE ENVIAN DATOS INCORRECTOS A DB
     return res.json({
       message: "Sucursal Creada",
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al crear una sucursal",
     });
@@ -62,6 +69,7 @@ export async function updateSucursal(req: Request, res: Response) {
   const id = req.params.id;
   const updateSucursal: Sucursales = req.body;
   try {
+    updateSucursalSchema.parse(updateSucursal)
     const conn = await connect();
     await conn.query("UPDATE sucursales SET ? WHERE id_sucursal = ?", [
       updateSucursal,
@@ -72,6 +80,11 @@ export async function updateSucursal(req: Request, res: Response) {
       message: "Sucursal editada",
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al editar la sucursal",
     });

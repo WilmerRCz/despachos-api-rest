@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
 import { Vehiculos } from "../interface/Vehiculos";
+import { ZodError } from "zod";
+import {
+  createVehiculoSchema,
+  updateVehiculoSchema,
+} from "../schemas/vehiculoSchema";
 
 export async function getVehiculos(
   req: Request,
@@ -20,6 +25,7 @@ export async function getVehiculos(
 export async function createVehiculo(req: Request, res: Response) {
   const newVehiculo: Vehiculos = req.body;
   try {
+    createVehiculoSchema.parse(newVehiculo);
     const conn = await connect();
     await conn.query("INSERT INTO vehiculo SET ?", [newVehiculo]);
     //VALIDAR SI SE ENVIAN DATOS INCORRECTOS A DB
@@ -27,6 +33,11 @@ export async function createVehiculo(req: Request, res: Response) {
       message: "Vehiculo creado",
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al crear un vehiculo",
     });
@@ -54,6 +65,7 @@ export async function updateVehiculo(req: Request, res: Response) {
   const id = req.params.id;
   const updateVehiculo = req.body;
   try {
+    updateVehiculoSchema.parse(updateVehiculoSchema);
     const conn = await connect();
     await conn.query("UPDATE vehiculo SET ? WHERE patente = ?", [
       updateVehiculo,
@@ -64,6 +76,11 @@ export async function updateVehiculo(req: Request, res: Response) {
       message: "Vehiculo actualizado",
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al editar el vehiculo",
     });
