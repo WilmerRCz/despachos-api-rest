@@ -8,7 +8,7 @@ export interface Despachos {
   nro_calle_cliente: number;
   apto_cliente: number;
   comuna_cliente: number;
-  codigo_celular_cliente?: String;
+  codigo_celular_cliente?: number;
   celular_cliente?: number;
   tipo_factura_guia: number;
   nro_guia_factura: number;
@@ -16,7 +16,7 @@ export interface Despachos {
   vehiculo_despacho: String;
   monto_venta: number;
   comentario_despacho?: String;
-  estado_despacho: number;
+  estado_despacho?: number;
   fecha_creacion_despacho?: Date;
   fecha_modificacion_despacho?: Date;
   fechayhora_comienzo_despacho?: Date;
