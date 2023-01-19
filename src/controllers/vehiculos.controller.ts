@@ -13,8 +13,15 @@ export async function getVehiculos(
 ): Promise<Response> {
   try {
     const conn = await connect();
-    const vehiculos = await conn.query("SELECT * FROM vehiculo");
-    return res.json(vehiculos[0]);
+    const [vehiculos] = await conn.query("SELECT * FROM vehiculo");
+    //VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    const result = JSON.parse(JSON.stringify(vehiculos));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "No hay Vehiculos creados",
+      });
+    }
+    return res.json(vehiculos);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los vehiculos",
@@ -25,10 +32,10 @@ export async function getVehiculos(
 export async function createVehiculo(req: Request, res: Response) {
   const newVehiculo: Vehiculos = req.body;
   try {
+    //VALIDANDO CAMPOS ENVIADOS AL SERVIDOR
     createVehiculoSchema.parse(newVehiculo);
     const conn = await connect();
     await conn.query("INSERT INTO vehiculo SET ?", [newVehiculo]);
-    //VALIDAR SI SE ENVIAN DATOS INCORRECTOS A DB
     return res.status(201).json({
       message: "Vehiculo creado",
     });
@@ -46,14 +53,21 @@ export async function createVehiculo(req: Request, res: Response) {
 
 export async function getVehiculo(req: Request, res: Response) {
   const id = req.params.id;
-
   try {
     const conn = await connect();
-    const vehiculo = await conn.query(
+    const [vehiculo] = await conn.query(
       "SELECT * FROM vehiculo WHERE patente = ?",
       [id]
     );
-    return res.json(vehiculo[0]);
+    //VALIDANDO SI EL ID EXISTE O NO
+    const result = JSON.parse(JSON.stringify(vehiculo));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "Vehiculo no encontrado",
+      });
+    } else {
+      return res.status(200).json(result[0]);
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al obtener el vehiculo",
@@ -63,16 +77,27 @@ export async function getVehiculo(req: Request, res: Response) {
 
 export async function updateVehiculo(req: Request, res: Response) {
   const id = req.params.id;
-  const updateVehiculo = req.body;
+  const updateVehiculo: Vehiculos = req.body;
   try {
-    updateVehiculoSchema.parse(updateVehiculoSchema);
+    //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
+    updateVehiculoSchema.parse(updateVehiculo);
     const conn = await connect();
+    const [patente] = await conn.query(
+      "SELECT * FROM vehiculo WHERE patente = ?",
+      [id]
+    );
+    //VALIDANDO SI EXISTE O NO EL ID
+    const result = JSON.parse(JSON.stringify(patente));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "Vehiculo no encontrado",
+      });
+    }
     await conn.query("UPDATE vehiculo SET ? WHERE patente = ?", [
       updateVehiculo,
       id,
     ]);
-    //VALIDAR SI RUTA ES DIFERENTE Y SI SE ENVIA UN DATO INEXISTENTE
-    return res.json({
+    return res.status(200).json({
       message: "Vehiculo actualizado",
     });
   } catch (error) {
@@ -91,10 +116,21 @@ export async function deleteVehiculo(req: Request, res: Response) {
   const id = req.params.id;
   try {
     const conn = await connect();
-    await conn.query("DELETE FROM vehiculo WHERE patente = ?", [id]);
-    return res.json({
-      message: "Vehiculo eliminado",
-    });
+    const [vehiculo] = await conn.query(
+      "DELETE FROM vehiculo WHERE patente = ?",
+      [id]
+    );
+    //VALIDANDO SI EXISTE O NO EL ID
+    const result = JSON.parse(JSON.stringify(vehiculo));
+    if (result.affectedRows <= 0) {
+      res.status(404).json({
+        message: "Vehiculo no encontrado",
+      });
+    } else {
+      return res.status(200).json({
+        message: "Vehiculo eliminado",
+      });
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al eliminar el vehiculo",
@@ -105,11 +141,11 @@ export async function deleteVehiculo(req: Request, res: Response) {
 export async function getVehiculosActivos(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const vehiculosActivos = await conn.query(
+    const [vehiculosActivos] = await conn.query(
       "SELECT * FROM vehiculo WHERE estado_vehiculo = ?",
       [1]
     );
-    return res.json(vehiculosActivos[0]);
+    return res.status(200).json(vehiculosActivos);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al conseguir los vehiculos activos",

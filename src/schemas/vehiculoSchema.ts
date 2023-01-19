@@ -5,13 +5,13 @@ export const createVehiculoSchema = z.object({
   patente: z
     .string()
     .trim()
-    .min(3, "Por favor introducir un nombre válido")
+    .min(6, "Introduce una patente válida")
     .max(6, "Nombre de sucursal muy largo"),
   sucursal_vehiculo: z
     .number()
     .min(1, "No existe sucursal")
     .max(6, "No existe sucursal"),
-  estado_sucursal: z
+  estado_vehiculo: z
     .number()
     .min(1, "No existe el estado")
     .max(2, "No existe el estado")
@@ -25,7 +25,7 @@ export const updateVehiculoSchema = z
       .min(1, "No existe sucursal")
       .max(6, "No existe sucursal")
       .optional(),
-    estado_sucursal: z
+    estado_vehiculo: z
       .number()
       .min(1, "No existe el estado")
       .max(2, "No existe el estado")

@@ -2,14 +2,24 @@ import { Request, Response } from "express";
 import { connect } from "../database";
 import bcrypt from "bcrypt";
 import { Usuarios } from "../interface/Usuarios";
-import { createUsuarioSchema, updateUsuarioSchema } from "../schemas/usuarioSchema";
-import { ZodError } from 'zod';
+import {
+  createUsuarioSchema,
+  updateUsuarioSchema,
+} from "../schemas/usuarioSchema";
+import { ZodError } from "zod";
 
 export async function getUsuarios(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const usuarios = await conn.query("SELECT * FROM usuarios");
-    return res.json(usuarios[0]);
+    const [usuarios] = await conn.query("SELECT * FROM usuarios");
+    //VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    const result = JSON.parse(JSON.stringify(usuarios));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "No hay Usuarios creados",
+      });
+    }
+    return res.json(usuarios);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al buscar los usuarios",
@@ -23,7 +33,9 @@ export async function createUsuario(req: Request, res: Response) {
 
   try {
     const conn = await connect();
-    createUsuarioSchema.parse(newUsuario)
+    //VALIDANDO CAMPOS ENVIADOS AL SERVIDOR
+    createUsuarioSchema.parse(newUsuario);
+    //ENCRIPTANDO CONTRASEÑA
     const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
     newUsuario.contrasena = hashcontrasena;
 
@@ -47,11 +59,19 @@ export async function getUsuario(req: Request, res: Response) {
   const id = req.params.id;
   try {
     const conn = await connect();
-    const usuario = await conn.query(
+    const [usuario] = await conn.query(
       "SELECT * FROM usuarios WHERE id_usuario = ?",
       [id]
     );
-    return res.json(usuario[0]);
+    //VALIDANDO SI EL ID EXISTE O NO
+    const result = JSON.parse(JSON.stringify(usuario));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    } else {
+      return res.status(200).json(result[0]);
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al obtener el usuario",
@@ -61,19 +81,33 @@ export async function getUsuario(req: Request, res: Response) {
 
 export async function updateUsuario(req: Request, res: Response) {
   const id = req.params.id;
-  const updateUsuario = req.body;
-  const { contrasena } = updateUsuario
+  const updateUsuario: Usuarios = req.body;
+  const { contrasena } = updateUsuario;
   try {
+    //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
+    updateUsuarioSchema.parse(updateUsuario);
     const conn = await connect();
-    updateUsuarioSchema.parse(updateUsuario)
+    //ENCRIPTANDO CONTRASEÑA
     const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
     updateUsuario.contrasena = hashcontrasena;
+
+    const [usuario] = await conn.query(
+      "SELECT * FROM usuarios WHERE id_usuario = ?",
+      [id]
+    );
+    //VALIDANDO SI EXISTE O NO EL ID
+    const result = JSON.parse(JSON.stringify(usuario));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    }
 
     await conn.query("UPDATE usuarios SET ? WHERE id_usuario = ?", [
       updateUsuario,
       id,
     ]);
-    return res.json({
+    return res.status(200).json({
       message: "Usuario actualizado",
     });
   } catch (error) {
@@ -92,10 +126,21 @@ export async function deleteUsuario(req: Request, res: Response) {
   const id = req.params.id;
   try {
     const conn = await connect();
-    await conn.query("DELETE FROM usuarios WHERE id_usuario = ?", [id]);
-    return res.json({
-      message: "Usuario eliminado",
-    });
+    const [usuario] = await conn.query(
+      "DELETE FROM usuarios WHERE id_usuario = ?",
+      [id]
+    );
+    //VALIDANDO SI EXISTE O NO EL ID
+    const result = JSON.parse(JSON.stringify(usuario));
+    if (result.affectedRows <= 0) {
+      res.status(404).json({
+        message: "Vehiculo no encontrado",
+      });
+    } else {
+      return res.status(200).json({
+        message: "Usuario eliminado",
+      });
+    }
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al eliminar el usuario",
@@ -106,11 +151,11 @@ export async function deleteUsuario(req: Request, res: Response) {
 export async function getUsuariosActivos(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const usuariosActivos = await conn.query(
+    const [usuariosActivos] = await conn.query(
       "SELECT * FROM usuarios WHERE estado_usuario = ?",
       [1]
     );
-    return res.json(usuariosActivos[0]);
+    return res.status(200).json(usuariosActivos);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los usuarios activos",
@@ -121,11 +166,11 @@ export async function getUsuariosActivos(req: Request, res: Response) {
 export async function getDespachadoresActivos(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const usuariosDespachadoresActivos = await conn.query(
+    const [usuariosDespachadoresActivos] = await conn.query(
       "SELECT * FROM usuarios WHERE privilegio = ? AND estado_usuario = ?",
       [3, 1]
     );
-    return res.json(usuariosDespachadoresActivos[0]);
+    return res.status(200).json(usuariosDespachadoresActivos);
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los despachadores activos",
