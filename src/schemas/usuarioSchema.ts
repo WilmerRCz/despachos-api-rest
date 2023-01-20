@@ -1,14 +1,17 @@
 import { z } from "zod";
 
+
 export const createUsuarioSchema = z.object({
   //VALIDAR NOMBRE SIN ESPACIOS
   nombre_usuario: z
     .string()
+    .regex(/^[A-Za-z\u00C0-\u017F\s]{2,30}$/g, "Nombre inválido")
     .trim()
     .min(2, "Por favor introducir un nombre válido")
     .max(30, "Nombre de sucursal muy largo"),
   apellido_usuario: z
     .string()
+    .regex(/^[A-Za-z\u00C0-\u017F\s]{2,30}$/g, "Apellido inválido")
     .trim()
     .min(2, "Por favor introducir un nombre válido")
     .max(30, "Nombre de sucursal muy largo"),
@@ -37,11 +40,13 @@ export const updateUsuarioSchema = z
   .object({
     nombre_usuario: z
     .string()
+    .regex(/^[A-Za-z\u00C0-\u017F\s]{2,30}$/g, "Nombre inválido")
     .trim()
     .min(2, "Por favor introducir un nombre válido")
     .max(30, "Nombre de sucursal muy largo").optional(),
   apellido_usuario: z
     .string()
+    .regex(/^[A-Za-z\u00C0-\u017F\s]{2,30}$/g, "Apellido inválido")
     .trim()
     .min(2, "Por favor introducir un nombre válido")
     .max(30, "Nombre de sucursal muy largo").optional(),
