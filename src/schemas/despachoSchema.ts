@@ -1,5 +1,5 @@
 import { z } from "zod";
-const validationRut = /^\d{1,2}\.\d{3}\.\d{3}[-][0-9kK]{1}$/;
+const validationRut = /^\d{1,3}\.\d{3}\.\d{3}[-][0-9kK]{1}$/;
 
 export const createDespachoSchema = z.object({
   usuario_despachador: z
