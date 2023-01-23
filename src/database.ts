@@ -8,6 +8,7 @@ export async function connect() {
     user: process.env.USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
+    timezone: 'Z',
     connectionLimit: 10,
   });
 
