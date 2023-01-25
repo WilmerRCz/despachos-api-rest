@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import cors from "cors"
 dotenv.config();
 
 //Routes
@@ -32,6 +33,7 @@ class App {
 
   middlewares() {
     this.app.use(morgan("dev"));
+    this.app.use(cors())
     this.app.use(express.json());
   }
 
