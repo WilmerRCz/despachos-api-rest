@@ -24,7 +24,7 @@ export const createUsuarioSchema = z.object({
   privilegio: z
     .number()
     .min(1, "No existe privilegio")
-    .max(3, "No existe privilegio"),
+    .max(4, "No existe privilegio"),
   sucursal: z
     .number()
     .min(1, "No existe sucursal")
@@ -59,7 +59,7 @@ export const updateUsuarioSchema = z
   privilegio: z
     .number()
     .min(1, "No existe privilegio")
-    .max(3, "No existe privilegio")
+    .max(4, "No existe privilegio")
     .optional(),
   sucursal: z
     .number()

@@ -38,10 +38,12 @@ export async function loginUser(req: Request, res: Response) {
           sucursal: usuarioToken.sucursal,
         },
         process.env.SECRET_KEY || "Dima4574.",
-        { expiresIn: "336h" }
+        { expiresIn: "168h" }
       );
+      const privilegio = usuarioEncontrado[0].privilegio
       return res.json({
         message: "login exitoso",
+        privilegio: privilegio,
         token: token,
       });
     });
