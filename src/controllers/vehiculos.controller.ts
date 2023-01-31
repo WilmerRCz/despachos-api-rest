@@ -13,7 +13,7 @@ export async function getVehiculos(
 ): Promise<Response> {
   try {
     const conn = await connect();
-    const [vehiculos] = await conn.query("SELECT * FROM vehiculo");
+    const [vehiculos] = await conn.query("SELECT * FROM vista_vehiculos");
     //VALIDANDO SI HAY O NO VEHICULOS CREADOS
     const result = JSON.parse(JSON.stringify(vehiculos));
     if (result <= 0) {

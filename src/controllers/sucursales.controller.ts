@@ -10,10 +10,10 @@ import { ZodError } from "zod";
 export async function getSucursales(
   req: Request,
   res: Response
-): Promise<Response> {
+){
   try {
     const conn = await connect();
-    const [sucursales] = await conn.query("SELECT * FROM sucursales");
+    const [sucursales] = await conn.query("SELECT * FROM vista_sucursales");
     //VALIDANDO SI HAY O NO VEHICULOS CREADOS
     const result = JSON.parse(JSON.stringify(sucursales));
     if (result <= 0) {

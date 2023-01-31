@@ -11,7 +11,7 @@ import { ZodError } from "zod";
 export async function getUsuarios(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const [usuarios] = await conn.query("SELECT * FROM usuarios");
+    const [usuarios] = await conn.query("SELECT * FROM vista_usuarios");
     //VALIDANDO SI HAY O NO VEHICULOS CREADOS
     const result = JSON.parse(JSON.stringify(usuarios));
     if (result <= 0) {
