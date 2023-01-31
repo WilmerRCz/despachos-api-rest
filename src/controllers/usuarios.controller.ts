@@ -82,14 +82,17 @@ export async function getUsuario(req: Request, res: Response) {
 export async function updateUsuario(req: Request, res: Response) {
   const id = req.params.id;
   const updateUsuario: Usuarios = req.body;
-  const { contrasena } = updateUsuario;
+  const  contrasena  = updateUsuario.contrasena;
   try {
     //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     updateUsuarioSchema.parse(updateUsuario);
     const conn = await connect();
     //ENCRIPTANDO CONTRASEÑA
-    const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
-    updateUsuario.contrasena = hashcontrasena;
+    if(contrasena){
+          const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
+          updateUsuario.contrasena = hashcontrasena;
+    }
+
 
     const [usuario] = await conn.query(
       "SELECT * FROM usuarios WHERE id_usuario = ?",
