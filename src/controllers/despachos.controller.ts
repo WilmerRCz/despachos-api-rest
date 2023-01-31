@@ -7,7 +7,7 @@ import { createDespachoSchema, updateDespachoSchema } from "../schemas/despachoS
 export async function getDespachos(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const [despachos] = await conn.query("SELECT * FROM despachos");
+    const [despachos] = await conn.query("SELECT * FROM vista_despachos_totales");
     //VALIDANDO SI HAY O NO VEHICULOS CREADOS
     const result = JSON.parse(JSON.stringify(despachos));
     if (result <= 0) {

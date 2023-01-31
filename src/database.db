@@ -1,0 +1,24 @@
+
+
+
+***********************************CREACION DE VISTAS PARA CONSULTAS MAS FACILES********************************
+CREATE VIEW vista_sucursales AS
+SELECT sucursales.id_sucursal, sucursales.nombre_sucursal, estado_actividad.nombre_estado, sucursales.fecha_creacion_sucursal, sucursales.fecha_modificacion_sucursal
+FROM sucursales
+INNER JOIN estado_actividad ON sucursales.estado_sucursal=estado_actividad.id_estado  
+ ORDER BY `id_sucursal` ASC
+
+CREATE VIEW vista_vehiculos AS
+SELECT vehiculo.patente, sucursales.nombre_sucursal, estado_actividad.nombre_estado, vehiculo.fecha_creacion_vehiculo, vehiculo.fecha_modificacion_vehiculo
+FROM vehiculo
+INNER JOIN estado_actividad ON vehiculo.estado_vehiculo=estado_actividad.id_estado
+INNER JOIN sucursales ON vehiculo.sucursal_vehiculo=sucursales.id_sucursal
+ ORDER BY `patente` ASC
+
+CREATE VIEW vista_usuarios AS
+SELECT usuarios.id_usuario, usuarios.nombre_usuario, usuarios.apellido_usuario, usuarios.correo, privilegios_usuarios.privilegio, sucursales.nombre_sucursal, estado_actividad.nombre_estado, usuarios.fecha_creacion_usuario, usuarios.fecha_modificacion_usuario
+FROM usuarios
+INNER JOIN privilegios_usuarios ON usuarios.privilegio=privilegios_usuarios.id_privilegios
+INNER JOIN sucursales ON usuarios.sucursal=sucursales.id_sucursal
+INNER JOIN estado_actividad ON usuarios.estado_usuario=estado_actividad.id_estado
+ ORDER BY `id_usuario` ASC
