@@ -10,13 +10,14 @@ import {
   isAdmin,
   isAdminOCoordinador,
   isAdminOCoordinadorODespachador,
+  isAdminOCoordinadorOLector,
 } from "../middlewares/verifytoken";
 
 const router = Router();
 
 router
   .route("/")
-  .get([validateToken, isAdmin], getDespachos)
+  .get([validateToken, isAdminOCoordinadorOLector], getDespachos)
   .post([validateToken, isAdminOCoordinador], createDespacho);
 router
   .route("/:id")

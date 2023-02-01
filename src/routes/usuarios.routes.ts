@@ -11,6 +11,7 @@ import {
 import {
   isAdmin,
   isAdminOCoordinador,
+  isAdminOCoordinadorOLector,
   validateToken,
 } from "../middlewares/verifytoken";
 
@@ -18,17 +19,17 @@ const router = Router();
 
 router
   .route("/activos")
-  .get([validateToken, isAdminOCoordinador], getUsuariosActivos);
+  .get([validateToken, isAdminOCoordinadorOLector], getUsuariosActivos);
 router
   .route("/activos/despachadores")
-  .get([validateToken, isAdminOCoordinador], getDespachadoresActivos);
+  .get([validateToken, isAdminOCoordinadorOLector], getDespachadoresActivos);
 router
   .route("/")
-  .get([validateToken, isAdminOCoordinador], getUsuarios)
+  .get([validateToken, isAdminOCoordinadorOLector], getUsuarios)
   .post([validateToken, isAdminOCoordinador], createUsuario);
 router
   .route("/:id")
-  .get([validateToken, isAdminOCoordinador], getUsuario)
+  .get([validateToken, isAdminOCoordinadorOLector], getUsuario)
   .put([validateToken, isAdminOCoordinador], updateUsuario)
   .delete([validateToken, isAdmin], deleteUsuario);
 

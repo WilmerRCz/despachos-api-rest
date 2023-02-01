@@ -10,6 +10,7 @@ import {
 import {
   isAdmin,
   isAdminOCoordinador,
+  isAdminOCoordinadorOLector,
   validateToken,
 } from "../middlewares/verifytoken";
 
@@ -17,14 +18,14 @@ const router = Router();
 
 router
   .route("/activas")
-  .get([validateToken, isAdminOCoordinador], getSucursalesActivas);
+  .get([validateToken, isAdminOCoordinadorOLector], getSucursalesActivas);
 router
   .route("/")
-  .get([validateToken, isAdminOCoordinador], getSucursales)
+  .get([validateToken, isAdminOCoordinadorOLector], getSucursales)
   .post([validateToken, isAdminOCoordinador], createSucursal);
 router
   .route("/:id")
-  .get([validateToken, isAdminOCoordinador], getSucursal)
+  .get([validateToken, isAdminOCoordinadorOLector], getSucursal)
   .delete([validateToken, isAdmin], deleteSucursal)
   .put([validateToken, isAdminOCoordinador], updateSucursal);
 
