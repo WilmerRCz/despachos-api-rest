@@ -33,17 +33,17 @@ export async function loginUser(req: Request, res: Response) {
       const token = jwt.sign(
         {
           id: usuarioToken.id_usuario,
-          correo: usuarioToken.correo,
+          nombre: usuarioToken.nombre_usuario,
+          apellido: usuarioToken.apellido_usuario,
           privilegio: usuarioToken.privilegio,
           sucursal: usuarioToken.sucursal,
+          auth: true
         },
         process.env.SECRET_KEY || "Dima4574.",
         { expiresIn: "168h" }
       );
-      const privilegio = usuarioEncontrado[0].privilegio
       return res.json({
         message: "login exitoso",
-        privilegio: privilegio,
         token: token,
       });
     });
