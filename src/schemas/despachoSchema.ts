@@ -92,6 +92,12 @@ export const createDespachoSchema = z.object({
     .min(1, "No existe estado del despacho")
     .max(4, "No existe estado del despacho")
     .optional(),
+    estado_actividad: z
+    .number()
+    .int("No se puede ingresar string")
+    .min(1, "No existe estado")
+    .max(2, "No existe estado")
+    .optional(),
   fechayhora_comienzo_despacho: z.string().datetime().optional(),
   fechayhora_termino_despacho: z.string().datetime().optional(),
 });
@@ -201,6 +207,12 @@ export const updateDespachoSchema = z
       .int("No se puede ingresar string")
       .min(1, "No existe estado del despacho")
       .max(4, "No existe estado del despacho")
+      .optional(),
+      estado_actividad: z
+      .number()
+      .int("No se puede ingresar string")
+      .min(1, "No existe estado")
+      .max(2, "No existe estado")
       .optional(),
     fechayhora_comienzo_despacho: z.string().datetime().optional(),
     fechayhora_termino_despacho: z.string().datetime().optional(),

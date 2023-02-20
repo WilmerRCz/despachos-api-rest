@@ -21,4 +21,5 @@ export interface Despachos {
   fecha_modificacion_despacho?: Date;
   fechayhora_comienzo_despacho?: Date;
   fechayhora_termino_despacho?: Date;
+  estado_actividad?: number
 }
