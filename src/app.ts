@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import cors from "cors"
+import cors from "cors";
 dotenv.config();
 
 //Routes
@@ -11,6 +11,8 @@ import VehiculosRoutes from "./routes/vehiculos.routes";
 import UsuariosRoutes from "./routes/usuarios.routes";
 import DespachosRoutes from "./routes/despachos.routes";
 import LoginRoutes from "./routes/login.routes";
+import ComunasRoutes from "./routes/comunas.routes";
+import CelularesRoutes from "./routes/celulares.routes";
 
 class App {
   private app: Application;
@@ -33,10 +35,12 @@ class App {
 
   middlewares() {
     this.app.use(morgan("dev"));
-    this.app.use(cors({
-      origin: "http://localhost:5173",
-      credentials: true
-    }))
+    this.app.use(
+      cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+      })
+    );
     this.app.use(express.json());
   }
 
@@ -47,6 +51,8 @@ class App {
     this.app.use("/api/v1/usuarios", UsuariosRoutes);
     this.app.use("/api/v1/despachos", DespachosRoutes);
     this.app.use("/api/v1/login", LoginRoutes);
+    this.app.use("/api/v1/comunas", ComunasRoutes);
+    this.app.use("/api/v1/celulares", CelularesRoutes);
 
     this.app.use((req, res) => {
       res.status(404).json({
