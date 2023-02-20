@@ -2,12 +2,18 @@ import { Request, Response } from "express";
 import { connect } from "../database";
 import { Despachos } from "../interface/Despachos";
 import { ZodError } from "zod";
-import { createDespachoSchema, updateDespachoSchema } from "../schemas/despachoSchema";
+import {
+  createDespachoSchema,
+  updateDespachoSchema,
+} from "../schemas/despachoSchema";
 
 export async function getDespachos(req: Request, res: Response) {
   try {
     const conn = await connect();
-    const [despachos] = await conn.query("SELECT * FROM vista_despachos_totales");
+    const [despachos] = await conn.query(
+      "SELECT * FROM vista_despachos_totales WHERE `estado` = ?",
+      ["Activo"]
+    );
     //VALIDANDO SI HAY O NO VEHICULOS CREADOS
     const result = JSON.parse(JSON.stringify(despachos));
     if (result <= 0) {
@@ -73,7 +79,7 @@ export async function updateDespacho(req: Request, res: Response) {
   const id = req.params.id;
   const updateDespacho = req.body;
   try {
-        //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
+    //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     updateDespachoSchema.parse(updateDespacho);
     const conn = await connect();
     const [despacho] = await conn.query(
