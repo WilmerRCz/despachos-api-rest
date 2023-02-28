@@ -44,6 +44,7 @@ export const createDespachoSchema = z.object({
     .positive("El número de departamento no puede ser negativo")
     .min(1, "El número de departamento no puede ser menor a 1")
     .max(60000, "El número de departamento no es válido")
+    .nullable()
     .optional(),
   comuna_cliente: z
     .number()
@@ -57,10 +58,12 @@ export const createDespachoSchema = z.object({
     .positive("El código de celular no puede ser negativo")
     .min(1, "El código de celular no puede ser menor a 1")
     .max(124, "Código inexistente")
+    .nullable()
     .optional(),
   celular_cliente: z
     .string()
     .regex(/^[0-9]{6,12}$/g, "Número celular inválido")
+    .nullable()
     .optional(),
   tipo_documento: z
     .number()
@@ -85,6 +88,7 @@ export const createDespachoSchema = z.object({
     .trim()
     .min(3, "Por favor introducir un comentario válido")
     .max(255, "Comentario excede capacidad máxima")
+    .nullable()
     .optional(),
   estado_despacho: z
     .number()
@@ -92,7 +96,7 @@ export const createDespachoSchema = z.object({
     .min(1, "No existe estado del despacho")
     .max(4, "No existe estado del despacho")
     .optional(),
-    estado_actividad: z
+  estado_actividad: z
     .number()
     .int("No se puede ingresar string")
     .min(1, "No existe estado")
@@ -208,7 +212,7 @@ export const updateDespachoSchema = z
       .min(1, "No existe estado del despacho")
       .max(4, "No existe estado del despacho")
       .optional(),
-      estado_actividad: z
+    estado_actividad: z
       .number()
       .int("No se puede ingresar string")
       .min(1, "No existe estado")
