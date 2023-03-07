@@ -13,6 +13,7 @@ import DespachosRoutes from "./routes/despachos.routes";
 import LoginRoutes from "./routes/login.routes";
 import ComunasRoutes from "./routes/comunas.routes";
 import CelularesRoutes from "./routes/celulares.routes";
+import TipoDocumento from "./routes/tipo_documento.routes"
 
 class App {
   private app: Application;
@@ -53,6 +54,7 @@ class App {
     this.app.use("/api/v1/login", LoginRoutes);
     this.app.use("/api/v1/comunas", ComunasRoutes);
     this.app.use("/api/v1/celulares", CelularesRoutes);
+    this.app.use("/api/v1/tipo_documento", TipoDocumento)
 
     this.app.use((req, res) => {
       res.status(404).json({
