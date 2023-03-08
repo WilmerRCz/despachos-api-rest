@@ -156,6 +156,7 @@ export const updateDespachoSchema = z
       .positive("El número de departamento no puede ser negativo")
       .min(1, "El número de departamento no puede ser menor a 1")
       .max(60000, "El número de departamento no es válido")
+      .nullable()
       .optional(),
     comuna_cliente: z
       .number()
@@ -170,15 +171,17 @@ export const updateDespachoSchema = z
       .positive("El código de celular no puede ser negativo")
       .min(1, "El código de celular no puede ser menor a 1")
       .max(124, "Código inexistente")
+      .nullable()
       .optional(),
     celular_cliente: z
       .string()
       .regex(/^[0-9]{6,12}$/g, "Número celular inválido")
+      .nullable()
       .optional(),
     tipo_documento: z
       .number()
       .int("No se puede ingresar string")
-      .positive("El celular no puede ser negativo")
+      .positive("El tipo de documento no puede ser negativo")
       .min(1, "Tipo de documento inválido")
       .max(3, "Tipo de documento inválido")
       .optional(),
@@ -221,4 +224,4 @@ export const updateDespachoSchema = z
     fechayhora_comienzo_despacho: z.string().datetime().optional(),
     fechayhora_termino_despacho: z.string().datetime().optional(),
   })
-  .strict("Esta tratando de modificar campos inmodificables");
+  
