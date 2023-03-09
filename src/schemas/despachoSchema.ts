@@ -16,7 +16,7 @@ export const createDespachoSchema = z.object({
     .max(30, "El id de la sucursal debe ser menor a 30"),
   nombre_cliente: z
     .string()
-    .regex(/^[A-Za-z\u00C0-\u017F\s]{3,60}$/g, "Nombre inválido")
+    .regex(/^[A-Za-z\u00C0-\u017F0-9\s]{3,60}$/g, "Nombre inválido")
     .trim()
     .min(3, "Por favor introducir un nombre válido")
     .max(60, "No se aceptan tantos caracteres"),
@@ -28,7 +28,7 @@ export const createDespachoSchema = z.object({
     .max(12, "Rut invalido"),
   direccion_calle_cliente: z
     .string()
-    .regex(/^[A-Za-z\u00C0-\u017F\s]{3,60}$/g, "Dirección inválida")
+    .regex(/^[A-Za-z\u00C0-\u017F0-9\s]{3,60}$/g, "Dirección inválida")
     .trim()
     .min(3, "Por favor introducir una dirección válida")
     .max(60, "Dirección muy larga"),
@@ -124,7 +124,7 @@ export const updateDespachoSchema = z
       .optional(),
     nombre_cliente: z
       .string()
-      .regex(/^[A-Za-z\u00C0-\u017F\s]{3,60}$/g, "Nombre inválido")
+      .regex(/^[A-Za-z\u00C0-\u017F0-9\s]{3,60}$/g, "Nombre inválido")
       .trim()
       .min(3, "Por favor introducir un nombre válido")
       .max(60, "No se aceptan tantos caracteres")
@@ -138,7 +138,7 @@ export const updateDespachoSchema = z
       .optional(),
     direccion_calle_cliente: z
       .string()
-      .regex(/^[A-Za-z\u00C0-\u017F\s]{3,60}$/g, "Dirección inválida")
+      .regex(/^[A-Za-z\u00C0-\u017F0-9\s]{3,60}$/g, "Dirección inválida")
       .trim()
       .min(3, "Por favor introducir una dirección válida")
       .max(60, "Dirección muy larga")
