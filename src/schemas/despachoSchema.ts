@@ -62,7 +62,7 @@ export const createDespachoSchema = z.object({
     .optional(),
   celular_cliente: z
     .string()
-    .regex(/^[0-9]{6,12}$/g, "Número celular inválido")
+    .regex(/^[0-9]{0,12}$/g, "Número celular inválido")
     .nullable()
     .optional(),
   tipo_documento: z
@@ -86,7 +86,7 @@ export const createDespachoSchema = z.object({
   comentario_despacho: z
     .string()
     .trim()
-    .min(3, "Por favor introducir un comentario válido")
+    .min(0, "Por favor introducir un comentario válido")
     .max(255, "Comentario excede capacidad máxima")
     .nullable()
     .optional(),
@@ -175,7 +175,7 @@ export const updateDespachoSchema = z
       .optional(),
     celular_cliente: z
       .string()
-      .regex(/^[0-9]{6,12}$/g, "Número celular inválido")
+      .regex(/^[0-9]{0,12}$/g, "Número celular inválido")
       .nullable()
       .optional(),
     tipo_documento: z
@@ -206,7 +206,7 @@ export const updateDespachoSchema = z
     comentario_despacho: z
       .string()
       .trim()
-      .min(3, "Por favor introducir un comentario válido")
+      .min(0, "Por favor introducir un comentario válido")
       .max(255, "Comentario excede capacidad máxima")
       .optional(),
     estado_despacho: z
