@@ -5,8 +5,8 @@ export interface Despachos {
   nombre_cliente: String;
   rut_cliente_despacho: String;
   direccion_calle_cliente: String;
-  nro_calle_cliente: number;
-  apto_cliente?: number;
+  nro_calle_cliente: string;
+  apto_cliente?: string;
   comuna_cliente: number;
   codigo_celular_cliente?: number;
   celular_cliente?: String;

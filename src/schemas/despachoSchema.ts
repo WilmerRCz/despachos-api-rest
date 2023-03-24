@@ -28,7 +28,7 @@ export const createDespachoSchema = z.object({
     .max(12, "Rut invalido"),
   direccion_calle_cliente: z
     .string()
-    .regex(/^[A-Za-z\u00C0-\u017F0-9\s]{3,60}$/g, "Dirección inválida")
+    .regex(/^[A-Za-z\u00C0-\u017F0-9\s.-]{3,60}$/g, "Dirección inválida")
     .trim()
     .min(3, "Por favor introducir una dirección válida")
     .max(60, "Dirección muy larga"),
@@ -76,7 +76,9 @@ export const createDespachoSchema = z.object({
     .string()
     .regex(/^[A-Za-z0-9]{6,6}$/g, "Patente inválida")
     .trim(),
-  monto_venta: z.string().regex(/^[0-9.]{0,12}$/g, "Monto de venta inválido"),
+  monto_venta: z
+    .string()
+    .regex(/^(?!-)(\d{1,12}(\.\d{0,2})?)?$/, "Monto de venta inválido"),
   comentario_despacho: z
     .string()
     .trim()
@@ -131,7 +133,7 @@ export const updateDespachoSchema = z.object({
     .optional(),
   direccion_calle_cliente: z
     .string()
-    .regex(/^[A-Za-z\u00C0-\u017F0-9\s]{3,60}$/g, "Dirección inválida")
+    .regex(/^[A-Za-z\u00C0-\u017F0-9\s.-]{3,60}$/g, "Dirección inválida")
     .trim()
     .min(3, "Por favor introducir una dirección válida")
     .max(60, "Dirección muy larga")
@@ -187,7 +189,7 @@ export const updateDespachoSchema = z.object({
     .optional(),
   monto_venta: z
     .string()
-    .regex(/^[0-9.]{0,12}$/g, "Monto de venta inválido")
+    .regex(/^(?!-)(\d{1,12}(\.\d{0,2})?)?$/, "Monto de venta inválido")
     .optional(),
   comentario_despacho: z
     .string()
