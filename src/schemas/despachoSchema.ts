@@ -140,7 +140,8 @@ export const updateDespachoSchema = z.object({
     .optional(),
   nro_calle_cliente: z
     .string()
-    .regex(/^[0-9]{2,10}$/g, "El nro de calle es inválido"),
+    .regex(/^[0-9]{2,10}$/g, "El nro de calle es inválido")
+    .optional(),
   apto_cliente: z
     .string()
     .regex(/^[0-9]{0,12}$/g, "El nro de apto es inválido")
