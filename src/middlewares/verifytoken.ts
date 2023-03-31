@@ -18,7 +18,7 @@ export async function validateToken(
     const bearerToken = extractToken[1];
     const tokenValid = jwt.verify(
       bearerToken,
-      process.env.SECRET_KEY || "Dima4574."
+      process.env.SECRET_KEY as string
     );
 
     req.cookies = tokenValid;
