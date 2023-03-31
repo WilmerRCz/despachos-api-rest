@@ -7,7 +7,6 @@ import {
 } from "../controllers/despachos.controller";
 import {
   validateToken,
-  isAdmin,
   isAdminOCoordinador,
   isAdminOCoordinadorODespachador,
   isAdminOCoordinadorOLector,
