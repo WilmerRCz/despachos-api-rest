@@ -78,12 +78,12 @@ export async function getSucursal(req: Request, res: Response) {
 export async function updateSucursal(req: Request, res: Response) {
   const id = req.params.id;
   const updateSucursal: Sucursales = req.body;
-  try {
+  
     //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     updateSucursalSchema.parse(updateSucursal);
     const conn = await connect();
     const [id_sucursal] = await conn.query(
-      "SELECT * FROM sucursales WHERE patente = ?",
+      "SELECT * FROM sucursales WHERE id_sucursal = ?",
       [id]
     );
     //VALIDANDO SI EXISTE O NO EL ID
@@ -100,16 +100,7 @@ export async function updateSucursal(req: Request, res: Response) {
     return res.status(200).json({
       message: "Sucursal actualizada",
     });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return res
-        .status(400)
-        .json(error.issues.map((issue) => ({ message: issue.message })));
-    }
-    return res.status(500).json({
-      message: "Ocurrio un error al editar la sucursal",
-    });
-  }
+
 }
 
 export async function deleteSucursal(req: Request, res: Response) {
