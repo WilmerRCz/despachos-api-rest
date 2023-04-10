@@ -20,4 +20,3 @@ export const updateVehiculoSchema = z
       .number()
       .optional(),
   })
-  .strict("Esta tratando de modificar campos inmodificables");
