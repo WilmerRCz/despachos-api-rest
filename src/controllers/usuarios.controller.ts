@@ -26,7 +26,7 @@ export async function getUsuarios(req: Request, res: Response) {
     });
   }
 }
-
+//Mejorar el control de errores si es que los correos son iguales, no deberian.
 export async function createUsuario(req: Request, res: Response) {
   const newUsuario: Usuarios = req.body;
   let { contrasena } = newUsuario;

@@ -16,6 +16,7 @@ import CelularesRoutes from "./routes/celulares.routes";
 import TipoDocumento from "./routes/tipo_documento.routes";
 import EstadoDespacho from "./routes/estado_despacho.routes"
 import EstadoActividad from "./routes/estado_actividad.routes"
+import Privilegios from './routes/privilegios.routes'
 
 class App {
   private app: Application;
@@ -59,6 +60,7 @@ class App {
     this.app.use("/api/v1/tipo_documento", TipoDocumento);
     this.app.use("/api/v1/estado_despacho", EstadoDespacho);
     this.app.use("/api/v1/estado_actividad", EstadoActividad)
+    this.app.use('/api/v1/privilegios', Privilegios)
 
     this.app.use((req, res) => {
       res.status(404).json({
