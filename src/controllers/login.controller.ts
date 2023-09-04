@@ -39,7 +39,7 @@ export async function loginUser(req: Request, res: Response) {
           sucursal: usuarioToken.sucursal,
           auth: true
         },
-        process.env.SECRET_KEY || "Dima4574.",
+        process.env.SECRET_KEY as string,
         { expiresIn: "168h" }
       );
       return res.json({

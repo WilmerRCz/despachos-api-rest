@@ -34,7 +34,7 @@ export async function validateToken(
 export async function isAdmin(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies;
   try {
-      if (token.privilegio == 1) {
+      if (token.privilegio === 1) {
     next();
   } else {
     return res.status(403).json({
@@ -52,7 +52,7 @@ export async function isAdmin(req: Request, res: Response, next: NextFunction) {
 export async function isAdminOCoordinador(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies;
   try {
-      if (token.privilegio == 1 || token.privilegio == 2) {
+      if (token.privilegio === 1 || token.privilegio === 2) {
     next();
   } else {
     return res.status(403).json({
@@ -69,7 +69,7 @@ export async function isAdminOCoordinador(req: Request, res: Response, next: Nex
 export async function isAdminOCoordinadorODespachador(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies;
   try {
-      if (token.privilegio == 1 || token.privilegio == 2 || token.privilegio == 3) {
+      if (token.privilegio === 1 || token.privilegio === 2 || token.privilegio === 3) {
     next();
   } else {
     return res.status(403).json({
@@ -86,7 +86,7 @@ export async function isAdminOCoordinadorODespachador(req: Request, res: Respons
 export async function isAdminOCoordinadorOLector(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies;
   try {
-      if (token.privilegio == 1 || token.privilegio == 2 || token.privilegio == 4) {
+      if (token.privilegio === 1 || token.privilegio === 2 || token.privilegio === 4) {
     next();
   } else {
     return res.status(403).json({
