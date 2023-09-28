@@ -17,6 +17,7 @@ export async function getCelulares(
     }
     return res.json(celulares);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los prefijos telefónicos",
     });

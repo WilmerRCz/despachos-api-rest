@@ -17,6 +17,7 @@ export async function getEstadoActividad(
     }
     return res.json(estado_actividad);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los estados de los despachos",
     });

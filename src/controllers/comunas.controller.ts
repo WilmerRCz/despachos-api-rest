@@ -17,6 +17,7 @@ export async function getComunas(
     }
     return res.json(comunas);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Ocurrio un error al consultar por las comunas",
     });

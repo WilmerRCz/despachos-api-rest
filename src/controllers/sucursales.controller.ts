@@ -23,6 +23,7 @@ export async function getSucursales(
     }
     return res.json(sucursales);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Ocurrio un error al consultar por las sucursales",
     });
