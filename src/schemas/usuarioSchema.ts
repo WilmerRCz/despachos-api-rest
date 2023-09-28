@@ -55,7 +55,7 @@ export const updateUsuarioSchema = z
     .trim()
     .min(1, "El correo es requerido")
     .email({ message: "Correo invalido" }).optional(),
-  contrasena: z.string().min(6, "La contraseña es requerida").optional(),
+  contrasena: z.string().min(6, "La contraseña debe ser mayor a 6").optional(),
   privilegio: z
     .number()
     .min(1, "No existe privilegio")
@@ -72,4 +72,3 @@ export const updateUsuarioSchema = z
     .max(2, "No existe el estado")
     .optional(),
   })
-  .strict("Esta tratando de modificar campos inmodificables");

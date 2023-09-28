@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
 import bcrypt from "bcrypt";
-import { Usuarios } from "../interface/Usuarios";
+import { UpdateUsuarios, Usuarios } from "../interface/Usuarios";
 import {
   createUsuarioSchema,
   updateUsuarioSchema,
@@ -81,9 +81,14 @@ export async function getUsuario(req: Request, res: Response) {
 
 export async function updateUsuario(req: Request, res: Response) {
   const id = req.params.id;
-  const updateUsuario: Usuarios = req.body;
-  const  contrasena  = updateUsuario.contrasena;
+  const updateUsuario: UpdateUsuarios = req.body;
+  let  contrasena  = updateUsuario.contrasena;
   try {
+
+    if (!contrasena) {
+      delete updateUsuario.contrasena;
+    }
+
     //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     updateUsuarioSchema.parse(updateUsuario);
     const conn = await connect();
@@ -98,6 +103,7 @@ export async function updateUsuario(req: Request, res: Response) {
       "SELECT * FROM usuarios WHERE id_usuario = ?",
       [id]
     );
+    
     //VALIDANDO SI EXISTE O NO EL ID
     const result = JSON.parse(JSON.stringify(usuario));
     if (result <= 0) {
@@ -110,9 +116,11 @@ export async function updateUsuario(req: Request, res: Response) {
       updateUsuario,
       id,
     ]);
+
     return res.status(200).json({
       message: "Usuario actualizado",
     });
+
   } catch (error) {
     if (error instanceof ZodError) {
       return res
