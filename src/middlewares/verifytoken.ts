@@ -30,75 +30,19 @@ export async function validateToken(
   }
 }
 
+export const checkRoles = (roles: number[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    
+    const token = req.cookies;
 
-export async function isAdmin(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies;
-  try {
-      if (token.privilegio === 1) {
+    if (!token.privilegio) {
+      return res.status(403).json({ message: 'Acceso denegado. Usuario no autenticado.' });
+    }
+
+    if (!roles.includes(token.privilegio)) {
+      return res.status(403).json({ message: 'Acceso denegado. No posees los permisos necesarios.' });
+    }
+
     next();
-  } else {
-    return res.status(403).json({
-      message: "Usuario no autorizado",
-    });
-  }
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error al verificar privilegio",
-    });
   }
 }
-
-
-export async function isAdminOCoordinador(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies;
-  try {
-      if (token.privilegio === 1 || token.privilegio === 2) {
-    next();
-  } else {
-    return res.status(403).json({
-      message: "Usuario no autorizado",
-    });
-  }
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error al verificar privilegio",
-    });
-  }
-}
-
-export async function isAdminOCoordinadorODespachador(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies;
-  try {
-      if (token.privilegio === 1 || token.privilegio === 2 || token.privilegio === 3) {
-    next();
-  } else {
-    return res.status(403).json({
-      message: "Usuario no autorizado",
-    });
-  }
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error al verificar privilegio",
-    });
-  }
-}
-
-export async function isAdminOCoordinadorOLector(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies;
-  try {
-      if (token.privilegio === 1 || token.privilegio === 2 || token.privilegio === 4) {
-    next();
-  } else {
-    return res.status(403).json({
-      message: "Usuario no autorizado",
-    });
-  }
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error al verificar privilegio",
-    });
-  }
-}
-
-
-

@@ -80,6 +80,7 @@ export async function updateSucursal(req: Request, res: Response) {
   const id = req.params.id;
   const updateSucursal: Sucursales = req.body;
   
+  try {
     //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     updateSucursalSchema.parse(updateSucursal);
     const conn = await connect();
@@ -101,28 +102,51 @@ export async function updateSucursal(req: Request, res: Response) {
     return res.status(200).json({
       message: "Sucursal actualizada",
     });
+    
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
+    return res.status(500).json({
+      message: "Ocurrio un error al actualizar la sucursal",
+    });
+  }
 
 }
 
 export async function deleteSucursal(req: Request, res: Response) {
   const id = req.params.id;
+  
   try {
+    //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     const conn = await connect();
-    const [sucursal] = await conn.query(
-      "DELETE FROM sucursales WHERE id_sucursal = ?",
+    const [id_sucursal] = await conn.query(
+      "SELECT * FROM sucursales WHERE id_sucursal = ?",
       [id]
     );
-    const result = JSON.parse(JSON.stringify(sucursal));
-    if (result.affectedRows <= 0) {
-      res.status(404).json({
+    //VALIDANDO SI EXISTE O NO EL ID
+    const result = JSON.parse(JSON.stringify(id_sucursal));
+    if (result <= 0) {
+      return res.status(404).json({
         message: "Sucursal no encontrada",
       });
-    } else {
-      return res.status(200).json({
-        message: "Sucursal eliminada",
-      });
     }
+    await conn.query("UPDATE sucursales SET ? WHERE id_sucursal = ?", [
+      {estado_sucursal: 2},
+      id,
+    ]);
+    return res.status(200).json({
+      message: "Sucursal eliminada",
+    });
+    
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al eliminar la sucursal",
     });

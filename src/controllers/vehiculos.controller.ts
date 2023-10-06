@@ -114,24 +114,37 @@ export async function updateVehiculo(req: Request, res: Response) {
 
 export async function deleteVehiculo(req: Request, res: Response) {
   const id = req.params.id;
+
   try {
+    //VALIDANDO CAMPOS DE ENTRADA ENVIADOS AL SERVIDOR
     const conn = await connect();
-    const [vehiculo] = await conn.query(
-      "DELETE FROM vehiculo WHERE patente = ?",
+    const [patente] = await conn.query(
+      "SELECT * FROM vehiculo WHERE patente = ?",
       [id]
     );
     //VALIDANDO SI EXISTE O NO EL ID
-    const result = JSON.parse(JSON.stringify(vehiculo));
-    if (result.affectedRows <= 0) {
-      res.status(404).json({
+    const result = JSON.parse(JSON.stringify(patente));
+    if (result <= 0) {
+      return res.status(404).json({
         message: "Vehiculo no encontrado",
       });
-    } else {
-      return res.status(200).json({
-        message: "Vehiculo eliminado",
-      });
     }
+    
+    await conn.query("UPDATE vehiculo SET ? WHERE patente = ?", [
+      {estado_vehiculo: 2},
+      id,
+    ]);
+
+    return res.status(200).json({
+      message: "Vehiculo eliminado",
+    });
+
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
     return res.status(500).json({
       message: "Ocurrio un error al eliminar el vehiculo",
     });

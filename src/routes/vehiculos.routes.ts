@@ -8,25 +8,27 @@ import {
   getVehiculosActivos,
 } from "../controllers/vehiculos.controller";
 import {
-  isAdmin,
-  isAdminOCoordinador,
-  isAdminOCoordinadorOLector,
+  checkRoles,
   validateToken,
 } from "../middlewares/verifytoken";
+import { DiccionarioRoles } from '../interface/DiccionarioRoles'
 
 const router = Router();
 
+const {Administrador, Coordinador, Despachador, Lector} = DiccionarioRoles
+
+
 router
   .route("/activos")
-  .get([validateToken, isAdminOCoordinadorOLector], getVehiculosActivos);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getVehiculosActivos);
 router
   .route("/")
-  .get([validateToken, isAdminOCoordinadorOLector], getVehiculos)
-  .post([validateToken, isAdminOCoordinador], createVehiculo);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getVehiculos)
+  .post([validateToken, checkRoles([Administrador, Coordinador])], createVehiculo);
 router
   .route("/:id")
-  .get([validateToken, isAdminOCoordinador], getVehiculo)
-  .put([validateToken, isAdminOCoordinador], updateVehiculo)
-  .delete([validateToken, isAdmin], deleteVehiculo);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getVehiculo)
+  .put([validateToken, checkRoles([Administrador, Coordinador])], updateVehiculo)
+  .delete([validateToken, checkRoles([Administrador, Coordinador])], deleteVehiculo);
 
 export default router;

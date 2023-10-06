@@ -84,7 +84,7 @@ export async function updateUsuario(req: Request, res: Response) {
   const updateUsuario: UpdateUsuarios = req.body;
   let  contrasena  = updateUsuario.contrasena;
   try {
-
+    // Por si el frontend me envia la contraseña vacia
     if (!contrasena) {
       delete updateUsuario.contrasena;
     }
@@ -97,7 +97,6 @@ export async function updateUsuario(req: Request, res: Response) {
           const hashcontrasena = await bcrypt.hashSync(contrasena, 10);
           updateUsuario.contrasena = hashcontrasena;
     }
-
 
     const [usuario] = await conn.query(
       "SELECT * FROM usuarios WHERE id_usuario = ?",
@@ -138,20 +137,27 @@ export async function deleteUsuario(req: Request, res: Response) {
   try {
     const conn = await connect();
     const [usuario] = await conn.query(
-      "DELETE FROM usuarios WHERE id_usuario = ?",
+      "SELECT * FROM usuarios WHERE id_usuario = ?",
       [id]
     );
+    
     //VALIDANDO SI EXISTE O NO EL ID
     const result = JSON.parse(JSON.stringify(usuario));
-    if (result.affectedRows <= 0) {
-      res.status(404).json({
-        message: "Vehiculo no encontrado",
-      });
-    } else {
-      return res.status(200).json({
-        message: "Usuario eliminado",
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
       });
     }
+
+    await conn.query("UPDATE usuarios SET ? WHERE id_usuario = ?", [
+      {estado_usuario: 2},
+      id,
+    ]);
+
+    return res.status(200).json({
+      message: "Usuario eliminado",
+    });
+
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al eliminar el usuario",

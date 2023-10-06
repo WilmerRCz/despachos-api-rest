@@ -9,28 +9,29 @@ import {
   updateUsuario,
 } from "../controllers/usuarios.controller";
 import {
-  isAdmin,
-  isAdminOCoordinador,
-  isAdminOCoordinadorOLector,
+  checkRoles,
   validateToken,
 } from "../middlewares/verifytoken";
+import { DiccionarioRoles } from '../interface/DiccionarioRoles'
 
 const router = Router();
 
+const {Administrador, Coordinador, Despachador, Lector} = DiccionarioRoles
+
 router
   .route("/activos")
-  .get([validateToken, isAdminOCoordinadorOLector], getUsuariosActivos);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getUsuariosActivos);
 router
   .route("/activos/despachadores")
-  .get([validateToken, isAdminOCoordinadorOLector], getDespachadoresActivos);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getDespachadoresActivos);
 router
   .route("/")
-  .get([validateToken, isAdminOCoordinadorOLector], getUsuarios)
-  .post([validateToken, isAdminOCoordinador], createUsuario);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getUsuarios)
+  .post([validateToken, checkRoles([Administrador, Coordinador])], createUsuario);
 router
   .route("/:id")
-  .get([validateToken, isAdminOCoordinadorOLector], getUsuario)
-  .put([validateToken, isAdminOCoordinador], updateUsuario)
-  .delete([validateToken, isAdmin], deleteUsuario);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getUsuario)
+  .put([validateToken, checkRoles([Administrador, Coordinador])], updateUsuario)
+  .delete([validateToken, checkRoles([Administrador, Coordinador])], deleteUsuario);
 
 export default router;

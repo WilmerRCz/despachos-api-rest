@@ -111,3 +111,40 @@ export async function updateDespacho(req: Request, res: Response) {
     });
   }
 }
+
+
+export async function deleteDespacho(req: Request, res: Response) {
+  const id = req.params.id;
+
+  try {
+
+    const conn = await connect();
+    const [despacho] = await conn.query(
+      "SELECT * FROM despachos WHERE id_despacho = ?",
+      [id]
+    );
+    //VALIDANDO SI EXISTE O NO EL ID
+    const result = JSON.parse(JSON.stringify(despacho));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "Despacho no encontrado",
+      });
+    }
+    await conn.query("UPDATE despachos SET ? WHERE id_despacho = ?", [
+      {estado_actividad: 2},
+      id,
+    ]);
+    return res.status(200).json({
+      message: "Despacho eliminado",
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json(error.issues.map((issue) => ({ message: issue.message })));
+    }
+    return res.status(500).json({
+      message: "Ocurrio un error al eliminar el despacho",
+    });
+  }
+}

@@ -8,25 +8,27 @@ import {
   getSucursalesActivas,
 } from "../controllers/sucursales.controller";
 import {
-  isAdmin,
-  isAdminOCoordinador,
-  isAdminOCoordinadorOLector,
+  checkRoles,
   validateToken,
 } from "../middlewares/verifytoken";
+import { DiccionarioRoles } from '../interface/DiccionarioRoles'
 
 const router = Router();
 
+const {Administrador, Coordinador, Despachador, Lector} = DiccionarioRoles
+
+
 router
   .route("/activas")
-  .get([validateToken, isAdminOCoordinadorOLector], getSucursalesActivas);
+  .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getSucursalesActivas);
 router
   .route("/")
-  .get([validateToken, isAdminOCoordinadorOLector], getSucursales)
-  .post([validateToken, isAdminOCoordinador], createSucursal);
+  .get([validateToken, checkRoles([Administrador, Coordinador,Despachador, Lector])], getSucursales)
+  .post([validateToken, checkRoles([Administrador, Coordinador])], createSucursal);
 router
   .route("/:id")
-  .get([validateToken, isAdminOCoordinadorOLector], getSucursal)
-  .delete([validateToken, isAdmin], deleteSucursal)
-  .put([validateToken, isAdminOCoordinador], updateSucursal);
+  .get([validateToken, checkRoles([Administrador, Coordinador,Despachador, Lector])], getSucursal)
+  .put([validateToken, checkRoles([Administrador, Coordinador])], updateSucursal)
+  .delete([validateToken, checkRoles([Administrador, Coordinador])], deleteSucursal)
 
 export default router;
