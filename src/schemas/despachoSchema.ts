@@ -210,6 +210,6 @@ export const updateDespachoSchema = z.object({
     .min(1, "No existe estado")
     .max(2, "No existe estado")
     .optional(),
-  fechayhora_comienzo_despacho: z.string().datetime().optional(),
-  fechayhora_termino_despacho: z.string().datetime().optional(),
+  fechayhora_comienzo_despacho: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, 'La fecha debe tener un formato AAAA-MM-DD HH:mm:ss').optional(),
+  fechayhora_termino_despacho: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, 'La fecha debe tener un formato AAAA-MM-DD HH:mm:ss').optional(),
 });
