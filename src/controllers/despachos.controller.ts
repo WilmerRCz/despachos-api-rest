@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
+import path from "path"
+import fs from "fs"
 import { Despachos } from "../interface/Despachos";
 import { ZodError } from "zod";
 import {
   createDespachoSchema,
   updateDespachoSchema,
 } from "../schemas/despachoSchema";
+import { createExcel } from '../utils/createExcel'
 
 export async function getDespachos(req: Request, res: Response) {
   try {
@@ -14,7 +17,7 @@ export async function getDespachos(req: Request, res: Response) {
       "SELECT * FROM vista_despachos_totales WHERE `estado` = ?",
       ["Activo"]
     );
-    //VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    //VALIDANDO SI HAY O NO DESPACHOS CREADOS
     const result = JSON.parse(JSON.stringify(despachos));
     if (result <= 0) {
       return res.status(404).json({
@@ -145,6 +148,57 @@ export async function deleteDespacho(req: Request, res: Response) {
     }
     return res.status(500).json({
       message: "Ocurrio un error al eliminar el despacho",
+    });
+  }
+}
+
+
+export async function getDespachosExcel(req: Request, res: Response) {
+  try {
+    
+    const conn = await connect();
+    const [despachos] = await conn.query(
+      "SELECT * FROM vista_despachos_totales WHERE `estado` = ?",
+      ["Activo"]
+    );
+
+    const result = JSON.parse(JSON.stringify(despachos));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "No hay Despachos creados",
+      });
+    }
+    // VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    if (!Array.isArray(despachos) || despachos.length === 0) {
+      return res.status(404).json({
+        message: "No hay Despachos creados",
+      });
+    }
+
+    // Asegúrate de que despachos sea una matriz de objetos JavaScript
+    const despachosArray = despachos.map((row) => ({ ...row }));
+
+    await createExcel(despachosArray, 'despachos')
+    const filePath = path.join(__dirname, '..', '..',  `despachos.xlsx`);
+    // Configura la respuesta de descarga
+    res.setHeader('Content-Disposition', 'attachment; filename=despachos.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    // Envía el archivo como respuesta
+    res.sendFile(filePath, (err) => {
+      // Maneja errores si es necesario
+      if (err) {
+        console.error('Error al enviar el archivo', err);
+        res.status(500).send('Error al descargar el archivo');
+      }
+
+      // Elimina el archivo temporal después de enviarlo
+      fs.unlinkSync(filePath);
+    })
+    
+  } catch (error) {
+    return res.status(500).json({
+      message: "Ocurrio un error al encontrar los despachos",
     });
   }
 }

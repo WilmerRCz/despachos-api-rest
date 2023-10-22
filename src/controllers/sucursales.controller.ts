@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
 import { Sucursales } from "../interface/Sucursales";
+import path from "path"
+import fs from "fs"
 import {
   createSucursalSchema,
   updateSucursalSchema,
 } from "../schemas/sucursalSchema";
 import { ZodError } from "zod";
+import { createExcel } from '../utils/createExcel'
 
 export async function getSucursales(
   req: Request,
@@ -164,6 +167,56 @@ export async function getSucursalesActivas(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al encontrar sucursales activas",
+    });
+  }
+}
+
+export async function getSucursalesExcel(
+  req: Request,
+  res: Response
+){
+  try {
+    const conn = await connect();
+    const [sucursales] = await conn.query("SELECT * FROM vista_sucursales");
+    //VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    const result = JSON.parse(JSON.stringify(sucursales));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "No hay Sucursales creadas",
+      });
+    }
+        // VALIDANDO SI HAY O NO VEHICULOS CREADOS
+        if (!Array.isArray(sucursales) || sucursales.length === 0) {
+          return res.status(404).json({
+            message: "No hay Despachos creados",
+          });
+        }
+    
+        // Asegúrate de que despachos sea una matriz de objetos JavaScript
+        const sucursalesArray = sucursales.map((row) => ({ ...row }));
+    
+        await createExcel(sucursalesArray, 'sucursales')
+        const filePath = path.join(__dirname, '..', '..',  `sucursales.xlsx`);
+        // Configura la respuesta de descarga
+        res.setHeader('Content-Disposition', 'attachment; filename=sucursales.xlsx');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    
+        // Envía el archivo como respuesta
+        res.sendFile(filePath, (err) => {
+          // Maneja errores si es necesario
+          if (err) {
+            console.error('Error al enviar el archivo', err);
+            res.status(500).send('Error al descargar el archivo');
+          }
+    
+          // Elimina el archivo temporal después de enviarlo
+          fs.unlinkSync(filePath);
+        })
+
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      message: "Ocurrio un error al consultar por las sucursales",
     });
   }
 }

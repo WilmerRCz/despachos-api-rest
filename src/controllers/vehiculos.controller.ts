@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
 import { Vehiculos } from "../interface/Vehiculos";
+import path from "path"
+import fs from "fs"
 import { ZodError } from "zod";
 import {
   createVehiculoSchema,
   updateVehiculoSchema,
 } from "../schemas/vehiculoSchema";
+import { createExcel } from '../utils/createExcel'
 
 export async function getVehiculos(
   req: Request,
@@ -162,6 +165,56 @@ export async function getVehiculosActivos(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al conseguir los vehiculos activos",
+    });
+  }
+}
+
+export async function getVehiculosExcel(
+  req: Request,
+  res: Response
+) {
+  try {
+    const conn = await connect();
+    const [vehiculos] = await conn.query("SELECT * FROM vista_vehiculos");
+    //VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    const result = JSON.parse(JSON.stringify(vehiculos));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "No hay Vehiculos creados",
+      });
+    }
+    
+        // VALIDANDO SI HAY O NO VEHICULOS CREADOS
+        if (!Array.isArray(vehiculos) || vehiculos.length === 0) {
+          return res.status(404).json({
+            message: "No hay Despachos creados",
+          });
+        }
+    
+        // Asegúrate de que despachos sea una matriz de objetos JavaScript
+        const vehiculosArray = vehiculos.map((row) => ({ ...row }));
+    
+        await createExcel(vehiculosArray, 'vehiculos')
+        const filePath = path.join(__dirname, '..', '..',  `vehiculos.xlsx`);
+        // Configura la respuesta de descarga
+        res.setHeader('Content-Disposition', 'attachment; filename=vehiculos.xlsx');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    
+        // Envía el archivo como respuesta
+        res.sendFile(filePath, (err) => {
+          // Maneja errores si es necesario
+          if (err) {
+            console.error('Error al enviar el archivo', err);
+            res.status(500).send('Error al descargar el archivo');
+          }
+    
+          // Elimina el archivo temporal después de enviarlo
+          fs.unlinkSync(filePath);
+        })
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Ocurrio un error al consultar por los vehiculos",
     });
   }
 }

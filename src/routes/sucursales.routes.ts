@@ -6,6 +6,7 @@ import {
   deleteSucursal,
   updateSucursal,
   getSucursalesActivas,
+  getSucursalesExcel,
 } from "../controllers/sucursales.controller";
 import {
   checkRoles,
@@ -25,6 +26,9 @@ router
   .route("/")
   .get([validateToken, checkRoles([Administrador, Coordinador,Despachador, Lector])], getSucursales)
   .post([validateToken, checkRoles([Administrador, Coordinador])], createSucursal);
+  router
+  .route("/sucursalesexcel")
+  .get([validateToken, checkRoles([Administrador, Coordinador, Lector])], getSucursalesExcel)
 router
   .route("/:id")
   .get([validateToken, checkRoles([Administrador, Coordinador,Despachador, Lector])], getSucursal)

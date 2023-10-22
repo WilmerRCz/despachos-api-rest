@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { connect } from "../database";
+import path from "path"
+import fs from "fs"
 import bcrypt from "bcrypt";
 import { UpdateUsuarios, Usuarios } from "../interface/Usuarios";
 import {
@@ -7,6 +9,7 @@ import {
   updateUsuarioSchema,
 } from "../schemas/usuarioSchema";
 import { ZodError } from "zod";
+import { createExcel } from '../utils/createExcel'
 
 export async function getUsuarios(req: Request, res: Response) {
   try {
@@ -191,6 +194,53 @@ export async function getDespachadoresActivos(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).json({
       message: "Ocurrio un error al consultar por los despachadores activos",
+    });
+  }
+}
+
+export async function getUsuariosExcel(req: Request, res: Response) {
+  try {
+    const conn = await connect();
+    const [usuarios] = await conn.query("SELECT * FROM vista_usuarios");
+    //VALIDANDO SI HAY O NO VEHICULOS CREADOS
+    const result = JSON.parse(JSON.stringify(usuarios));
+    if (result <= 0) {
+      return res.status(404).json({
+        message: "No hay Usuarios creados",
+      });
+    }
+    
+        // VALIDANDO SI HAY O NO VEHICULOS CREADOS
+        if (!Array.isArray(usuarios) || usuarios.length === 0) {
+          return res.status(404).json({
+            message: "No hay Despachos creados",
+          });
+        }
+    
+        // Asegúrate de que despachos sea una matriz de objetos JavaScript
+        const usuariosArray = usuarios.map((row) => ({ ...row }));
+    
+        await createExcel(usuariosArray, 'usuarios')
+        const filePath = path.join(__dirname, '..', '..',  `usuarios.xlsx`);
+        // Configura la respuesta de descarga
+        res.setHeader('Content-Disposition', 'attachment; filename=usuarios.xlsx');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    
+        // Envía el archivo como respuesta
+        res.sendFile(filePath, (err) => {
+          // Maneja errores si es necesario
+          if (err) {
+            console.error('Error al enviar el archivo', err);
+            res.status(500).send('Error al descargar el archivo');
+          }
+    
+          // Elimina el archivo temporal después de enviarlo
+          fs.unlinkSync(filePath);
+        })
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Ocurrio un error al buscar los usuarios",
     });
   }
 }

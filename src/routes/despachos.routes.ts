@@ -4,6 +4,7 @@ import {
   deleteDespacho,
   getDespacho,
   getDespachos,
+  getDespachosExcel,
   updateDespacho,
 } from "../controllers/despachos.controller";
 import {
@@ -21,6 +22,9 @@ router
   .route("/")
   .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getDespachos)
   .post([validateToken, checkRoles([Administrador, Coordinador])], createDespacho);
+  router
+  .route("/despachosexcel")
+  .get([validateToken, checkRoles([Administrador, Coordinador, Lector])], getDespachosExcel)
 router
   .route("/:id")
   .get([validateToken, checkRoles([Administrador, Coordinador])], getDespacho)

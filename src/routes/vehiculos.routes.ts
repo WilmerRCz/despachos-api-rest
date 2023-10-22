@@ -6,6 +6,7 @@ import {
   updateVehiculo,
   deleteVehiculo,
   getVehiculosActivos,
+  getVehiculosExcel,
 } from "../controllers/vehiculos.controller";
 import {
   checkRoles,
@@ -25,6 +26,9 @@ router
   .route("/")
   .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getVehiculos)
   .post([validateToken, checkRoles([Administrador, Coordinador])], createVehiculo);
+  router
+  .route("/vehiculosexcel")
+  .get([validateToken, checkRoles([Administrador, Coordinador, Lector])], getVehiculosExcel)
 router
   .route("/:id")
   .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getVehiculo)

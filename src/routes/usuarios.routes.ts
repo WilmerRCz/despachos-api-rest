@@ -6,6 +6,7 @@ import {
   getUsuario,
   getUsuarios,
   getUsuariosActivos,
+  getUsuariosExcel,
   updateUsuario,
 } from "../controllers/usuarios.controller";
 import {
@@ -28,6 +29,9 @@ router
   .route("/")
   .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getUsuarios)
   .post([validateToken, checkRoles([Administrador, Coordinador])], createUsuario);
+  router
+  .route("/usuariosexcel")
+  .get([validateToken, checkRoles([Administrador, Coordinador, Lector])], getUsuariosExcel)
 router
   .route("/:id")
   .get([validateToken, checkRoles([Administrador, Coordinador, Despachador, Lector])], getUsuario)
